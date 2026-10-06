@@ -1,0 +1,1 @@
+# Quiz-Rasio-Skala-Laju-Perubahan-SMP-G7
