@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Essay Matematika Kelas 7 SMP - Rasio, Skala & Laju Perubahan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            body { background: white !important; color: black !important; }
+            .q-card { break-inside: avoid; border: 1px solid #ccc !important; box-shadow: none !important; }
+            .solution-box { display: block !important; }
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-full flex flex-col text-slate-800 bg-slate-50 selection:bg-indigo-500 selection:text-white">
+
+    <!-- Sticky Header -->
+    <header class="sticky top-0 z-40 bg-indigo-900 text-white shadow-lg no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex flex-wrap justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-indigo-700/80 rounded-xl shadow-inner text-2xl text-amber-300 flex items-center justify-center">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-extrabold tracking-tight">Kuis Essay Matematika Kelas 7</h1>
+                    <p class="text-xs sm:text-sm text-indigo-200">Kurikulum Merdeka &bull; Rasio, Skala & Laju Perubahan</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 sm:gap-3">
+                <button onclick="checkAllAnswers()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-lg shadow transition duration-200 flex items-center gap-2 text-xs sm:text-sm">
+                    <i class="fa-solid fa-square-check"></i>
+                    <span>Cek Jawaban</span>
+                </button>
+                <button onclick="toggleAllSolutions()" class="px-3.5 py-2 bg-indigo-700 hover:bg-indigo-600 text-white font-semibold rounded-lg shadow transition duration-200 flex items-center gap-2 text-xs sm:text-sm">
+                    <i class="fa-solid fa-key"></i>
+                    <span class="hidden sm:inline">Semua Pembahasan</span>
+                </button>
+                <button onclick="resetAllAnswers()" class="px-3.5 py-2 bg-indigo-800 hover:bg-rose-600 text-white font-semibold rounded-lg shadow transition duration-200 flex items-center gap-2 text-xs sm:text-sm" title="Bersihkan Semua Jawaban">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span class="hidden lg:inline">Reset Jawaban</span>
+                </button>
+                <button onclick="window.print()" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-lg shadow transition duration-200 flex items-center gap-2 text-xs sm:text-sm">
+                    <i class="fa-solid fa-print"></i>
+                    <span class="hidden md:inline">Cetak / PDF</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 space-y-6">
+        
+        <!-- Printable Header Title -->
+        <div class="hidden print-only text-center mb-6 border-b pb-4">
+            <h1 class="text-2xl font-bold">LEMBAR KERJA & QUIZ ESSAY MATEMATIKA KELAS 7</h1>
+            <p class="text-sm text-gray-600">Materi: Rasio, Skala, dan Laju Perubahan (30 Soal Essay)</p>
+            <div class="flex justify-between text-xs mt-4">
+                <span>Nama Siswa: ______________________</span>
+                <span>Kelas/Absen: ______________________</span>
+                <span>Tanggal: ______________________</span>
+            </div>
+        </div>
+
+        <!-- Dashboard Score Card & Progress -->
+        <div id="score-board" class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 no-print">
+            <div class="flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-4 w-full lg:w-auto">
+                    <div id="score-badge" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center text-white bg-indigo-600 shadow-md flex-shrink-0">
+                        <span id="score-percent" class="text-xl sm:text-2xl font-black">0%</span>
+                        <span class="text-[10px] uppercase font-bold tracking-wider opacity-80">Skor</span>
+                    </div>
+                    <div>
+                        <h2 id="score-title" class="text-base sm:text-lg font-bold text-slate-800">Evaluasi Mandiri Soal Essay</h2>
+                        <p id="score-detail" class="text-xs sm:text-sm text-slate-600 mt-0.5">Tuliskan cara pengerjaan lengkap di kolom yang tersedia, lalu periksa hasil akhir kamu.</p>
+                        <div class="flex flex-wrap gap-2 mt-2">
+                            <span id="stats-rasio" class="px-2.5 py-0.5 bg-blue-50 text-blue-700 text-xs font-semibold rounded-full border border-blue-100">Rasio: 0/10</span>
+                            <span id="stats-skala" class="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-full border border-emerald-100">Skala: 0/10</span>
+                            <span id="stats-laju" class="px-2.5 py-0.5 bg-purple-50 text-purple-700 text-xs font-semibold rounded-full border border-purple-100">Laju: 0/10</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full lg:w-72 space-y-2">
+                    <div class="flex justify-between text-xs font-semibold text-slate-600">
+                        <span>Kemajuan Dijawab</span>
+                        <span id="progress-text">0 / 30 Soal</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-slate-200">
+                        <div id="progress-bar" class="bg-indigo-600 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs & Quick Jump Bar -->
+        <div class="space-y-3 no-print">
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none border-b border-slate-200 text-xs sm:text-sm">
+                <button onclick="filterSection('all', event)" class="tab-btn active px-4 py-2 rounded-xl font-bold bg-indigo-600 text-white whitespace-nowrap shadow-sm transition">
+                    <i class="fa-solid fa-list-check mr-1.5"></i>Semua Soal (30)
+                </button>
+                <button onclick="filterSection('sec-rasio', event)" class="tab-btn px-4 py-2 rounded-xl font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 whitespace-nowrap transition">
+                    <i class="fa-solid fa-scale-balanced mr-1.5 text-blue-600"></i>1. Rasio (10 Soal)
+                </button>
+                <button onclick="filterSection('sec-skala', event)" class="tab-btn px-4 py-2 rounded-xl font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 whitespace-nowrap transition">
+                    <i class="fa-solid fa-map-location-dot mr-1.5 text-emerald-600"></i>2. Skala (10 Soal)
+                </button>
+                <button onclick="filterSection('sec-laju', event)" class="tab-btn px-4 py-2 rounded-xl font-bold bg-white text-slate-600 hover:bg-slate-100 border border-slate-200 whitespace-nowrap transition">
+                    <i class="fa-solid fa-gauge-high mr-1.5 text-purple-600"></i>3. Laju Perubahan (10 Soal)
+                </button>
+            </div>
+
+            <!-- Quick Jump Grid -->
+            <div class="bg-white p-3 rounded-xl border border-slate-200 flex items-center gap-2 flex-wrap text-xs">
+                <span class="font-bold text-slate-500 mr-1"><i class="fa-solid fa-location-arrow"></i> Lompat Soal:</span>
+                <div id="quick-nav-container" class="flex flex-wrap gap-1.5">
+                    <!-- Quick Nav Buttons generated via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions Main Container -->
+        <div id="questions-container" class="space-y-8">
+            <!-- Questions rendered via JavaScript -->
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-slate-500 text-xs sm:text-sm no-print">
+        <div class="max-w-7xl mx-auto px-4">
+            <p class="font-bold text-slate-700">Bank Soal Essay Matematika SMP Kelas 7 - Kurikulum Merdeka</p>
+            <p class="text-xs text-slate-400 mt-1">Latihan Interaktif Pembelajaran Matematika: Bab Rasio, Skala & Laju Perubahan</p>
+        </div>
+    </footer>
+
+    <script>
+        // Database 30 Soal Essay Matematika Kelas 7
+        const quizData = [
+            // ================= BAB 1: RASIO (10 SOAL) =================
+            {
+                sectionId: 'sec-rasio',
+                sectionTitle: 'Bab 1: Rasio (Perbandingan)',
+                sectionDesc: 'Memahami konsep rasio, menyederhanakan rasio, perbandingan bagian dan selisih.',
+                questions: [
+                    {
+                        id: 'q1',
+                        number: 1,
+                        topic: 'Rasio Sederhana',
+                        question: 'Dalam sebuah kelas VII terdapat 16 siswa laki-laki dan 24 siswa perempuan. Tentukan bentuk rasio paling sederhana dari banyak siswa laki-laki terhadap siswa perempuan!',
+                        acceptedAnswers: ['2:3', '2 : 3', '2/3'],
+                        numResult: '2 : 3',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Banyak siswa laki-laki = 16<br>
+                        2. Banyak siswa perempuan = 24<br>
+                        3. Rasio laki-laki : perempuan = 16 : 24<br>
+                        4. Sederhanakan dengan membagi kedua bilangan dengan FPB yaitu 8:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;(16 &divide; 8) : (24 &divide; 8) = <b>2 : 3</b><br>
+                        <b>Jadi, rasio sederhananya adalah 2 : 3.</b>`
+                    },
+                    {
+                        id: 'q2',
+                        number: 2,
+                        topic: 'Menyederhanakan Rasio',
+                        question: 'Sederhanakan bentuk rasio berikut sampai ke bentuk paling sederhana:<br>a) 45 : 75<br>b) 1,2 : 1,8',
+                        acceptedAnswers: ['3:5 dan 2:3', '3:5, 2:3', '3:5 & 2:3', '3:5 dan 2:3'],
+                        numResult: '3:5 dan 2:3',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        a) 45 : 75 &rarr; Bagi kedua bilangan dengan FPB (15):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;(45 &divide; 15) : (75 &divide; 15) = <b>3 : 5</b><br>
+                        b) 1,2 : 1,8 &rarr; Kalikan 10 dahulu untuk menghilangkan koma desimal:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;12 : 18 &rarr; Lalu bagi dengan 6:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;(12 &divide; 6) : (18 &divide; 6) = <b>2 : 3</b><br>
+                        <b>Jadi, jawabannya adalah 3 : 5 dan 2 : 3.</b>`
+                    },
+                    {
+                        id: 'q3',
+                        number: 3,
+                        topic: 'Jumlah Bagian Rasio',
+                        question: 'Perbandingan uang saku Adit dan Budi adalah 3 : 5. Jika jumlah uang saku mereka berdua adalah Rp40.000,00, berapakah besar uang saku Adit dan Budi masing-masing?',
+                        acceptedAnswers: ['15000 dan 25000', '15.000 dan 25.000', '15000, 25000', 'rp 15.000 dan rp 25.000'],
+                        numResult: 'Adit Rp15.000 & Budi Rp25.000',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Rasio Adit : Budi = 3 : 5<br>
+                        2. Total bagian rasio = 3 + 5 = 8 bagian<br>
+                        3. Nilai 1 bagian = Rp40.000 &divide; 8 = Rp5.000<br>
+                        4. Uang Adit = 3 &times; Rp5.000 = <b>Rp15.000,00</b><br>
+                        5. Uang Budi = 5 &times; Rp5.000 = <b>Rp25.000,00</b>`
+                    },
+                    {
+                        id: 'q4',
+                        number: 4,
+                        topic: 'Selisih Bagian Rasio',
+                        question: 'Rasio umur Rina dan Dimas adalah 5 : 3. Jika selisih umur mereka adalah 6 tahun, berapa tahun umur Rina dan Dimas masing-masing?',
+                        acceptedAnswers: ['15 dan 9', '15 tahun dan 9 tahun', '15, 9', 'rina 15 dimas 9'],
+                        numResult: 'Rina 15 tahun & Dimas 9 tahun',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Selisih rasio = 5 - 3 = 2 bagian<br>
+                        2. Diketahui selisih umur = 6 tahun<br>
+                        3. Nilai 1 bagian rasio = 6 &divide; 2 = 3 tahun<br>
+                        4. Umur Rina = 5 &times; 3 = <b>15 tahun</b><br>
+                        5. Umur Dimas = 3 &times; 3 = <b>9 tahun</b>`
+                    },
+                    {
+                        id: 'q5',
+                        number: 5,
+                        topic: 'Rasio Tiga Kuantitas',
+                        question: 'Perbandingan banyak kelereng Anton, Beni, dan Candra adalah 2 : 3 : 4. Jika jumlah kelereng mereka bertiga adalah 180 butir, berapa banyak kelereng Anton dan Candra?',
+                        acceptedAnswers: ['40 dan 80', '40, 80', '40 butir dan 80 butir', 'anton 40 candra 80'],
+                        numResult: 'Anton 40 butir & Candra 80 butir',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Total bagian rasio = 2 + 3 + 4 = 9 bagian<br>
+                        2. Nilai 1 bagian = 180 &divide; 9 = 20 butir<br>
+                        3. Kelereng Anton = 2 &times; 20 = <b>40 butir</b><br>
+                        4. Kelereng Beni = 3 &times; 20 = 60 butir<br>
+                        5. Kelereng Candra = 4 &times; 20 = <b>80 butir</b>`
+                    },
+                    {
+                        id: 'q6',
+                        number: 6,
+                        topic: 'Rasio Kesetaraan Bahan',
+                        question: 'Untuk membuat 12 buah kue dibutuhkan 300 gram tepung terigu. Berapa gram tepung terigu yang diperlukan jika Ibu ingin membuat 20 buah kue?',
+                        acceptedAnswers: ['500', '500 gram', '500g', '500 gr'],
+                        numResult: '500 gram',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Cari kebutuhan tepung per 1 kue:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;300 gram &divide; 12 kue = 25 gram/kue<br>
+                        2. Untuk 20 buah kue:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;20 &times; 25 gram = <b>500 gram</b><br>
+                        <b>Atau menggunakan perbandingan senilai:</b><br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;(12 / 20) = (300 / x) &rarr; x = (20 &times; 300) &divide; 12 = <b>500 gram</b>.`
+                    },
+                    {
+                        id: 'q7',
+                        number: 7,
+                        topic: 'Rasio Campuran',
+                        question: 'Sebuah campuran cat dibuat dengan mencampurkan cat merah dan cat putih dengan rasio 4 : 7. Jika digunakan 280 ml cat putih, berapa ml cat merah yang diperlukan?',
+                        acceptedAnswers: ['160', '160 ml', '160ml'],
+                        numResult: '160 ml',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Rasio Merah : Putih = 4 : 7<br>
+                        2. Bagian cat putih = 7 bagian = 280 ml<br>
+                        3. Nilai 1 bagian = 280 ml &divide; 7 = 40 ml<br>
+                        4. Cat merah = 4 bagian &times; 40 ml = <b>160 ml</b>`
+                    },
+                    {
+                        id: 'q8',
+                        number: 8,
+                        topic: 'Membandingkan Dua Rasio',
+                        question: 'Toko A menjual 3 buku seharga Rp12.000,00. Toko B menjual 5 buku seharga Rp18.000,00. Toko manakah yang menawarkan harga per buku lebih murah? Tunjukkan rasio harga per bukunya!',
+                        acceptedAnswers: ['toko b', 'b', 'toko b lebih murah'],
+                        numResult: 'Toko B (Rp3.600/buku vs Toko A Rp4.000/buku)',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Harga per buku Toko A = Rp12.000 &divide; 3 = <b>Rp4.000,00 / buku</b><br>
+                        2. Harga per buku Toko B = Rp18.000 &divide; 5 = <b>Rp3.600,00 / buku</b><br>
+                        3. Karena Rp3.600 < Rp4.000, maka <b>Toko B menawarkan harga lebih murah</b>.`
+                    },
+                    {
+                        id: 'q9',
+                        number: 9,
+                        topic: 'Rasio pada Geometri',
+                        question: 'Rasio panjang dan lebar sebuah persegi panjang adalah 7 : 4. Jika keliling persegi panjang tersebut adalah 66 cm, tentukan luas persegi panjang tersebut!',
+                        acceptedAnswers: ['252', '252 cm2', '252 cm²', '252cm2'],
+                        numResult: '252 cm²',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Keliling = 2 &times; (panjang + lebar) = 66 cm &rarr; (p + l) = 33 cm<br>
+                        2. Rasio p : l = 7 : 4 &rarr; Total bagian = 7 + 4 = 11 bagian<br>
+                        3. Nilai 1 bagian = 33 cm &divide; 11 = 3 cm<br>
+                        4. Panjang = 7 &times; 3 = 21 cm<br>
+                        5. Lebar = 4 &times; 3 = 12 cm<br>
+                        6. Luas = p &times; l = 21 cm &times; 12 cm = <b>252 cm²</b>`
+                    },
+                    {
+                        id: 'q10',
+                        number: 10,
+                        topic: 'Rasio Gabungan & Selisih',
+                        question: 'Dalam wadah terdapat kelereng merah dan kelereng biru dengan rasio 5 : 8. Jika kelereng biru 24 butir lebih banyak daripada kelereng merah, berapakah jumlah seluruh kelereng dalam wadah tersebut?',
+                        acceptedAnswers: ['104', '104 butir', '104butir'],
+                        numResult: '104 butir',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Selisih rasio biru - merah = 8 - 5 = 3 bagian<br>
+                        2. Selisih butir = 24 butir<br>
+                        3. Nilai 1 bagian = 24 &divide; 3 = 8 butir<br>
+                        4. Total bagian rasio = 5 + 8 = 13 bagian<br>
+                        5. Total seluruh kelereng = 13 &times; 8 = <b>104 butir</b>`
+                    }
+                ]
+            },
+
+            // ================= BAB 2: SKALA (10 SOAL) =================
+            {
+                sectionId: 'sec-skala',
+                sectionTitle: 'Bab 2: Skala & Gambar Berskala',
+                sectionDesc: 'Menghitung jarak sebenarnya, jarak pada peta/denah, skala peta, dan luas pada denah.',
+                questions: [
+                    {
+                        id: 'q11',
+                        number: 11,
+                        topic: 'Mencari Jarak Sebenarnya',
+                        question: 'Jarak antara Kota P dan Kota Q pada peta adalah 6 cm. Jika skala peta tersebut adalah 1 : 400.000, berapakah jarak sebenarnya antara kedua kota dalam satuan kilometer (km)?',
+                        acceptedAnswers: ['24', '24 km', '24km'],
+                        numResult: '24 km',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Jarak Sebenarnya (JS) = Jarak Peta (JP) &times; Skala Utama<br>
+                        2. JS = 6 cm &times; 400.000 = 2.400.000 cm<br>
+                        3. Konversi cm ke km (bagi 100.000):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;2.400.000 cm = <b>24 km</b>.`
+                    },
+                    {
+                        id: 'q12',
+                        number: 12,
+                        topic: 'Mencari Jarak Pada Peta',
+                        question: 'Jarak sebenarnya antara dua kecamatan adalah 35 km. Jika kedua kecamatan digambar pada peta dengan skala 1 : 700.000, berapa cm jarak kedua kecamatan pada peta?',
+                        acceptedAnswers: ['5', '5 cm', '5cm'],
+                        numResult: '5 cm',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Ubah JS ke cm: 35 km = 3.500.000 cm<br>
+                        2. Jarak Peta (JP) = JS &divide; Skala Utama<br>
+                        3. JP = 3.500.000 &divide; 700.000 = <b>5 cm</b>.`
+                    },
+                    {
+                        id: 'q13',
+                        number: 13,
+                        topic: 'Mencari Skala Peta',
+                        question: 'Jarak Kota A dan Kota B sebenarnya adalah 80 km. Pada peta, jarak kedua kota tersebut digambar sepanjang 4 cm. Tentukan skala peta tersebut!',
+                        acceptedAnswers: ['1:2.000.000', '1 : 2.000.000', '1:2000000', '1 : 2000000'],
+                        numResult: '1 : 2.000.000',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Ubah JS ke cm: 80 km = 8.000.000 cm<br>
+                        2. Skala = JP : JS<br>
+                        3. Skala = 4 cm : 8.000.000 cm<br>
+                        4. Sederhanakan (bagi kedua ruas dengan 4):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;1 : 2.000.000<br>
+                        <b>Jadi, skala peta adalah 1 : 2.000.000.</b>`
+                    },
+                    {
+                        id: 'q14',
+                        number: 14,
+                        topic: 'Luas Sebenarnya Denah',
+                        question: 'Sebuah denah rumah berbentuk persegi panjang berukuran 5 cm &times; 3 cm. Jika denah tersebut dibuat dengan skala 1 : 150, tentukan luas rumah sebenarnya dalam satuan meter persegi (m²)!',
+                        acceptedAnswers: ['33,75', '33.75', '33,75 m2', '33.75 m²'],
+                        numResult: '33,75 m²',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Panjang sebenarnya = 5 cm &times; 150 = 750 cm = 7,5 m<br>
+                        2. Lebar sebenarnya = 3 cm &times; 150 = 450 cm = 4,5 m<br>
+                        3. Luas sebenarnya = Panjang sebenarnya &times; Lebar sebenarnya<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Luas = 7,5 m &times; 4,5 m = <b>33,75 m²</b>.`
+                    },
+                    {
+                        id: 'q15',
+                        number: 15,
+                        topic: 'Skala Maket / Model',
+                        question: 'Sebuah gedung bertingkat memiliki tinggi sebenarnya 60 meter. Tinggi maket (model) gedung tersebut dibuat setinggi 12 cm. Berapakah skala maket gedung tersebut?',
+                        acceptedAnswers: ['1:500', '1 : 500', '1: 500'],
+                        numResult: '1 : 500',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Tinggi sebenarnya = 60 m = 6.000 cm<br>
+                        2. Skala = Tinggi Maket : Tinggi Sebenarnya<br>
+                        3. Skala = 12 cm : 6.000 cm<br>
+                        4. Sederhanakan (bagi 12):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;(12 &divide; 12) : (6.000 &divide; 12) = <b>1 : 500</b>.`
+                    },
+                    {
+                        id: 'q16',
+                        number: 16,
+                        topic: 'Perubahan Skala Peta',
+                        question: 'Sebuah peta awal memiliki skala 1 : 100.000. Jika peta tersebut diperbesar 2 kali lipat, berapakah skala peta baru hasil pembesaran tersebut?',
+                        acceptedAnswers: ['1:50.000', '1 : 50.000', '1:50000', '1 : 50000'],
+                        numResult: '1 : 50.000',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Jika peta diperbesar, penyebut skala menjadi lebih kecil.<br>
+                        2. Penyebut skala baru = Penyebut lama &divide; Faktor pembesaran<br>
+                        3. Penyebut baru = 100.000 &divide; 2 = 50.000<br>
+                        <b>Jadi, skala peta yang baru adalah 1 : 50.000.</b>`
+                    },
+                    {
+                        id: 'q17',
+                        number: 17,
+                        topic: 'Membandingkan Dua Peta',
+                        question: 'Jarak Kota X dan Kota Y pada Peta A yang berskala 1 : 500.000 adalah 8 cm. Jika jarak kedua kota tersebut pada Peta B adalah 10 cm, berapakah skala Peta B?',
+                        acceptedAnswers: ['1:400.000', '1 : 400.000', '1:400000', '1 : 400000'],
+                        numResult: '1 : 400.000',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Hitung Jarak Sebenarnya (JS) dari Peta A:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;JS = 8 cm &times; 500.000 = 4.000.000 cm<br>
+                        2. Hitung Skala Peta B menggunakan JP Peta B (10 cm):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Skala B = 10 cm : 4.000.000 cm = <b>1 : 400.000</b>.`
+                    },
+                    {
+                        id: 'q18',
+                        number: 18,
+                        topic: 'Miniatur & Dimensi Asli',
+                        question: 'Sebuah miniatur mobil memiliki panjang 16 cm dan lebar 6 cm. Jika miniatur tersebut menggunakan skala 1 : 25, tentukan panjang dan lebar mobil sebenarnya dalam satuan meter (m)!',
+                        acceptedAnswers: ['4m dan 1,5m', '4 m dan 1,5 m', '4 dan 1.5', '4m, 1.5m', 'panjang 4m lebar 1,5m'],
+                        numResult: 'Panjang 4 m & Lebar 1,5 m',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Panjang sebenarnya = 16 cm &times; 25 = 400 cm = <b>4 meter</b><br>
+                        2. Lebar sebenarnya = 6 cm &times; 25 = 150 cm = <b>1,5 meter</b><br>
+                        <b>Jadi, dimensi sebenarnya adalah Panjang 4 m dan Lebar 1,5 m.</b>`
+                    },
+                    {
+                        id: 'q19',
+                        number: 19,
+                        topic: 'Pembesaran Foto',
+                        question: 'Sebuah foto berukuran 4 cm &times; 6 cm diperbesar sedemikian rupa sehingga lebarnya menjadi 18 cm. Tentukan tinggi foto baru setelah diperbesar!',
+                        acceptedAnswers: ['27', '27 cm', '27cm'],
+                        numResult: '27 cm',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Lebar awal = 4 cm, Lebar baru = 18 cm<br>
+                        2. Faktor pembesaran = 18 &divide; 4 = 4,5 kali<br>
+                        3. Tinggi baru = Tinggi awal &times; Faktor pembesaran<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Tinggi baru = 6 cm &times; 4,5 = <b>27 cm</b>.`
+                    },
+                    {
+                        id: 'q20',
+                        number: 20,
+                        topic: 'Denah Lapangan Kompleks',
+                        question: 'Pada denah lapangan berskala 1 : 400, keliling lapangan pada denah adalah 30 cm. Jika perbandingan panjang dan lebar denah adalah 3 : 2, berapakah luas lapangan sebenarnya dalam satuan m²?',
+                        acceptedAnswers: ['864', '864 m2', '864 m²', '864m2'],
+                        numResult: '864 m²',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Keliling denah = 2 &times; (p + l) = 30 cm &rarr; p + l = 15 cm<br>
+                        2. Rasio p : l = 3 : 2 &rarr; Total bagian = 5 bagian<br>
+                        3. Nilai 1 bagian = 15 cm &divide; 5 = 3 cm<br>
+                        4. Panjang denah = 3 &times; 3 = 9 cm &rarr; p asli = 9 cm &times; 400 = 3600 cm = 36 m<br>
+                        5. Lebar denah = 2 &times; 3 = 6 cm &rarr; l asli = 6 cm &times; 400 = 2400 cm = 24 m<br>
+                        6. Luas sebenarnya = 36 m &times; 24 m = <b>864 m²</b>.`
+                    }
+                ]
+            },
+
+            // ================= BAB 3: LAJU PERUBAHAN (10 SOAL) =================
+            {
+                sectionId: 'sec-laju',
+                sectionTitle: 'Bab 3: Laju Perubahan & Harga Satuan',
+                sectionDesc: 'Kecepatan rata-rata, debit air, laju pemakaian bahan bakar, kepadatan, dan laju kuantitas.',
+                questions: [
+                    {
+                        id: 'q21',
+                        number: 21,
+                        topic: 'Kecepatan Rata-Rata',
+                        question: 'Sebuah sepeda motor menempuh jarak 135 km dalam waktu 2,25 jam (2 jam 15 menit). Berapakah kecepatan rata-rata sepeda motor tersebut dalam km/jam?',
+                        acceptedAnswers: ['60', '60 km/jam', '60km/jam'],
+                        numResult: '60 km/jam',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Rumus Kecepatan (v) = Jarak (s) &divide; Waktu (t)<br>
+                        2. v = 135 km &divide; 2,25 jam<br>
+                        3. v = <b>60 km/jam</b>.`
+                    },
+                    {
+                        id: 'q22',
+                        number: 22,
+                        topic: 'Waktu Perjalanan',
+                        question: 'Pak Dion mengendarai mobil dengan kecepatan rata-rata 72 km/jam. Jika jarak yang ditempuh adalah 216 km dan Pak Dion berangkat pukul 07.30, pukul berapakah Pak Dion tiba di tujuan?',
+                        acceptedAnswers: ['10.30', '10:30', 'pukul 10.30', '10.30 wib'],
+                        numResult: 'Pukul 10.30',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Waktu tempuh (t) = Jarak &divide; Kecepatan<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;t = 216 km &divide; 72 km/jam = 3 jam<br>
+                        2. Waktu tiba = Pukul 07.30 + 3 jam = <b>Pukul 10.30</b>.`
+                    },
+                    {
+                        id: 'q23',
+                        number: 23,
+                        topic: 'Debit Air (Liter/Detik)',
+                        question: 'Sebuah keran air mampu mengalirkan air sebanyak 90 liter dalam waktu 3 menit. Berapakah debit aliran air keran tersebut dalam satuan liter/detik?',
+                        acceptedAnswers: ['0,5', '0.5', '0,5 liter/detik', '0.5 liter/detik'],
+                        numResult: '0,5 liter/detik',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Ubah waktu menit ke detik: 3 menit = 3 &times; 60 = 180 detik<br>
+                        2. Debit (Q) = Volume &divide; Waktu<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Q = 90 liter &divide; 180 detik = <b>0,5 liter/detik</b>.`
+                    },
+                    {
+                        id: 'q24',
+                        number: 24,
+                        topic: 'Waktu Pengisian Debit',
+                        question: 'Sebuah kolam renang memiliki volume 36 m³. Kolam tersebut diisi air menggunakan pompa dengan debit 200 liter/menit. Berapa jam waktu yang dibutuhkan hingga kolam terisi penuh?',
+                        acceptedAnswers: ['3', '3 jam', '3jam'],
+                        numResult: '3 jam',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Konversi volume: 36 m³ = 36.000 liter<br>
+                        2. Waktu (menit) = Volume &divide; Debit<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Waktu = 36.000 &divide; 200 = 180 menit<br>
+                        3. Konversi menit ke jam: 180 menit &divide; 60 = <b>3 jam</b>.`
+                    },
+                    {
+                        id: 'q25',
+                        number: 25,
+                        topic: 'Harga Satuan (Unit Rate)',
+                        question: 'Sebuah minimarket menjual beras kemasan 5 kg seharga Rp68.000,00 dan kemasan 10 kg seharga Rp130.000,00. Kemasan manakah yang menawarkan harga per kg lebih murah? Jelaskan!',
+                        acceptedAnswers: ['kemasan 10 kg', '10 kg', '10kg', 'kemasan 10kg'],
+                        numResult: 'Kemasan 10 kg (Rp13.000/kg vs Rp13.600/kg)',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Laju harga kemasan 5 kg = Rp68.000 &divide; 5 = <b>Rp13.600,00 / kg</b><br>
+                        2. Laju harga kemasan 10 kg = Rp130.000 &divide; 10 = <b>Rp13.000,00 / kg</b><br>
+                        3. Karena Rp13.000 < Rp13.600, maka <b>kemasan 10 kg lebih murah</b>.`
+                    },
+                    {
+                        id: 'q26',
+                        number: 26,
+                        topic: 'Laju Konsumsi Bensin',
+                        question: 'Sebuah mobil memerlukan 8 liter bensin untuk menempuh jarak 96 km. Jika mobil tersebut akan menempuh jarak 180 km, berapa liter bensin yang diperlukan?',
+                        acceptedAnswers: ['15', '15 liter', '15liter', '15 l'],
+                        numResult: '15 liter',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Cari laju jarak per liter bensin (efisiensi):<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;96 km &divide; 8 liter = 12 km/liter<br>
+                        2. Kebutuhan bensin untuk 180 km:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;180 km &divide; 12 km/liter = <b>15 liter</b>.`
+                    },
+                    {
+                        id: 'q27',
+                        number: 27,
+                        topic: 'Kepadatan Penduduk',
+                        question: 'Kecamatan A luasnya 120 km² dengan penduduk 48.000 jiwa. Kecamatan B luasnya 80 km² dengan penduduk 36.000 jiwa. Wilayah manakah yang memiliki kepadatan penduduk lebih tinggi?',
+                        acceptedAnswers: ['kecamatan b', 'b', 'kecamatan b lebih padat'],
+                        numResult: 'Kecamatan B (450 jiwa/km² vs Kec. A 400 jiwa/km²)',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Kepadatan Kecamatan A = 48.000 jiwa &divide; 120 km² = <b>400 jiwa/km²</b><br>
+                        2. Kepadatan Kecamatan B = 36.000 jiwa &divide; 80 km² = <b>450 jiwa/km²</b><br>
+                        3. Karena 450 > 400, maka <b>Kecamatan B memiliki kepadatan penduduk lebih tinggi</b>.`
+                    },
+                    {
+                        id: 'q28',
+                        number: 28,
+                        topic: 'Laju Upah Kerja',
+                        question: 'Seorang tukang bangunan mendapat upah Rp240.000,00 untuk bekerja selama 6 jam. Jika ia bekerja selama 8,5 jam, berapakah upah yang seharusnya ia terima?',
+                        acceptedAnswers: ['340000', '340.000', 'rp 340.000', 'rp340.000'],
+                        numResult: 'Rp340.000,00',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Hitung laju upah per jam:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Rp240.000 &divide; 6 jam = Rp40.000,00 / jam<br>
+                        2. Upah untuk 8,5 jam kerja:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;8,5 jam &times; Rp40.000 = <b>Rp340.000,00</b>.`
+                    },
+                    {
+                        id: 'q29',
+                        number: 29,
+                        topic: 'Laju Perubahan Suhu',
+                        question: 'Suhu cairan laboratorium awalnya 15°C. Ketika dipanaskan, suhunya naik dengan laju konstan 3°C setiap 2 menit. Berapakah suhu cairan tersebut setelah dipanaskan selama 10 menit?',
+                        acceptedAnswers: ['30', '30°c', '30 c', '30° c', '30 derajat'],
+                        numResult: '30°C',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Hitung berapa kali kenaikan terjadi dalam 10 menit:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;10 menit &divide; 2 menit = 5 kali kenaikan<br>
+                        2. Total kenaikan suhu = 5 &times; 3°C = 15°C<br>
+                        3. Suhu akhir = Suhu awal + Kenaikan<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Suhu akhir = 15°C + 15°C = <b>30°C</b>.`
+                    },
+                    {
+                        id: 'q30',
+                        number: 30,
+                        topic: 'Laju Ketik & Waktu',
+                        question: 'Seorang penulis mampu mengetik 1.200 kata dalam waktu 30 menit. Jika ia harus mengetik naskah sebanyak 3.000 kata dengan kecepatan laju yang sama, berapa jam waktu yang dibutuhkan?',
+                        acceptedAnswers: ['1,25', '1.25', '1,25 jam', '1 jam 15 menit', '1.25 jam'],
+                        numResult: '1,25 jam (75 menit)',
+                        solution: `<b>Langkah Penyelesaian:</b><br>
+                        1. Kecepatan mengetik = 1.200 kata &divide; 30 menit = 40 kata/menit<br>
+                        2. Waktu yang dibutuhkan = 3.000 kata &divide; 40 kata/menit = 75 menit<br>
+                        3. Konversi ke jam = 75 &divide; 60 = <b>1,25 jam</b> (atau 1 jam 15 menit).`
+                    }
+                ]
+            }
+        ];
+
+        // Global State User Answers & Progress
+        let userResponses = {};
+
+        // Render Quick Nav Buttons
+        function renderQuickNav() {
+            const container = document.getElementById('quick-nav-container');
+            container.innerHTML = '';
+
+            let count = 1;
+            quizData.forEach(sec => {
+                sec.questions.forEach(q => {
+                    const btn = document.createElement('button');
+                    btn.id = `qnav_${q.id}`;
+                    btn.className = `w-7 h-7 rounded-lg font-bold border border-slate-300 bg-slate-50 text-slate-700 hover:bg-indigo-50 hover:border-indigo-300 flex items-center justify-center transition`;
+                    btn.innerText = q.number;
+                    btn.onclick = () => scrollToQuestion(q.id);
+                    container.appendChild(btn);
+                    count++;
+                });
+            });
+        }
+
+        // Render All Questions
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            quizData.forEach((sec) => {
+                const sectionEl = document.createElement('section');
+                sectionEl.id = sec.sectionId;
+                sectionEl.className = 'question-section space-y-6';
+
+                let sectionHeader = `
+                    <div class="bg-indigo-900 text-white p-5 rounded-2xl shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2 border border-indigo-800">
+                        <div>
+                            <h2 class="text-lg sm:text-xl font-extrabold flex items-center gap-2">
+                                <span>${sec.sectionTitle}</span>
+                            </h2>
+                            <p class="text-xs sm:text-sm text-indigo-200 mt-1">${sec.sectionDesc}</p>
+                        </div>
+                        <span class="px-3 py-1 bg-indigo-800/80 text-amber-300 font-bold text-xs rounded-lg border border-indigo-700 self-start sm:self-auto">
+                            10 Soal Essay
+                        </span>
+                    </div>
+                `;
+
+                let cardsHTML = `<div class="grid grid-cols-1 gap-6">`;
+
+                sec.questions.forEach((q) => {
+                    cardsHTML += `
+                        <div id="card_${q.id}" class="q-card bg-white p-5 sm:p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 relative transition-all">
+                            <!-- Header Card -->
+                            <div class="flex flex-wrap justify-between items-center gap-2 border-b border-slate-100 pb-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 bg-indigo-100 text-indigo-900 text-xs font-black rounded-lg">
+                                        Soal #${q.number}
+                                    </span>
+                                    <span class="text-xs font-semibold px-2.5 py-0.5 bg-slate-100 text-slate-600 rounded-full">
+                                        ${q.topic}
+                                    </span>
+                                </div>
+                                <div id="status_${q.id}" class="hidden text-xs font-bold px-2.5 py-1 rounded-lg"></div>
+                            </div>
+
+                            <!-- Soal Prompt -->
+                            <div class="text-slate-800 text-sm sm:text-base leading-relaxed font-medium">
+                                ${q.question}
+                            </div>
+
+                            <!-- Student Essay Input Area (Clean & Modern Design) -->
+                            <div class="space-y-3 bg-slate-50/70 p-4 rounded-xl border border-slate-200/80 no-print">
+                                <div class="flex items-center justify-between">
+                                    <label class="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                                        <i class="fa-solid fa-pen-to-square text-indigo-600"></i>
+                                        Lembar Kerja / Cara Pengerjaan:
+                                    </label>
+                                    <button onclick="clearSingleAnswer('${q.id}')" title="Hapus jawaban nomor ini" class="text-xs text-slate-400 hover:text-rose-600 transition flex items-center gap-1 font-semibold px-2 py-0.5 rounded-lg hover:bg-rose-50">
+                                        <i class="fa-solid fa-eraser"></i> Bersihkan
+                                    </button>
+                                </div>
+                                <textarea id="essay_${q.id}" rows="3" oninput="handleInput('${q.id}')"
+                                    placeholder="Tuliskan langkah-langkah atau coretan perhitunganmu di sini..."
+                                    class="w-full text-xs sm:text-sm p-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white focus:outline-none bg-white/90 text-slate-800 resize-y transition shadow-sm"></textarea>
+
+                                <div class="flex flex-col sm:flex-row sm:items-center gap-3 pt-1">
+                                    <div class="flex-grow">
+                                        <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+                                            <i class="fa-solid fa-calculator text-emerald-600"></i>
+                                            Hasil Akhir:
+                                        </label>
+                                        <input type="text" id="ans_${q.id}" oninput="handleInput('${q.id}')"
+                                            class="w-full text-xs sm:text-sm p-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:bg-white focus:outline-none bg-white/90 font-bold text-slate-900 transition shadow-sm">
+                                    </div>
+                                    <div class="flex items-end gap-2 pt-1 sm:pt-0">
+                                        <button onclick="checkSingleAnswer('${q.id}')" class="px-3.5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs shadow-sm transition flex items-center gap-1.5 whitespace-nowrap">
+                                            <i class="fa-solid fa-check"></i> Cek Soal
+                                        </button>
+                                        <button onclick="toggleSolution('${q.id}')" class="px-3.5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold rounded-xl text-xs transition flex items-center gap-1.5 whitespace-nowrap">
+                                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Pembahasan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Printable Essay Workspace for Paper Print -->
+                            <div class="hidden print-only mt-4 space-y-2">
+                                <p class="text-xs font-bold text-gray-700">Lembar Jawaban Siswa:</p>
+                                <div class="border border-gray-400 rounded p-2 h-28"></div>
+                                <p class="text-xs font-bold text-gray-700 mt-2">Hasil Akhir: _______________</p>
+                            </div>
+
+                            <!-- Solution Box -->
+                            <div id="sol_${q.id}" class="solution-box hidden mt-4 p-4 bg-indigo-50/90 border border-indigo-200 rounded-xl text-xs sm:text-sm text-indigo-950 space-y-2 transition-all">
+                                <div class="font-bold text-indigo-900 flex items-center justify-between border-b border-indigo-200/80 pb-2">
+                                    <span class="flex items-center gap-1.5">
+                                        <i class="fa-solid fa-key text-amber-500"></i> Kunci & Langkah Penyelesaian Lengkap:
+                                    </span>
+                                    <span class="text-xs px-2 py-0.5 bg-indigo-200 text-indigo-900 rounded font-bold">Hasil: ${q.numResult}</span>
+                                </div>
+                                <div class="leading-relaxed pt-1">${q.solution}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                cardsHTML += `</div>`;
+                sectionEl.innerHTML = sectionHeader + cardsHTML;
+                container.appendChild(sectionEl);
+            });
+        }
+
+        // Handle user typing and update quick nav badge
+        function handleInput(qid) {
+            const essayVal = document.getElementById(`essay_${qid}`).value.trim();
+            const ansVal = document.getElementById(`ans_${qid}`).value.trim();
+            
+            const navBtn = document.getElementById(`qnav_${qid}`);
+
+            if (essayVal !== '' || ansVal !== '') {
+                userResponses[qid] = { essay: essayVal, ans: ansVal };
+                navBtn.classList.remove('bg-slate-50', 'text-slate-700');
+                navBtn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+            } else {
+                delete userResponses[qid];
+                navBtn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
+                navBtn.classList.add('bg-slate-50', 'text-slate-700');
+            }
+
+            updateProgressBar();
+        }
+
+        // Update top progress bar
+        function updateProgressBar() {
+            const answeredCount = Object.keys(userResponses).length;
+            const total = 30;
+            const percent = Math.round((answeredCount / total) * 100);
+
+            document.getElementById('progress-text').innerText = `${answeredCount} / ${total} Soal`;
+            document.getElementById('progress-bar').style.width = `${percent}%`;
+        }
+
+        // Check single question answer
+        function checkSingleAnswer(qid) {
+            let qObj = null;
+            quizData.forEach(s => {
+                s.questions.forEach(q => {
+                    if (q.id === qid) qObj = q;
+                });
+            });
+
+            if (!qObj) return;
+
+            const userAnsInput = (document.getElementById(`ans_${qid}`).value || '').toLowerCase().trim();
+            const statusEl = document.getElementById(`status_${qid}`);
+            const solEl = document.getElementById(`sol_${qid}`);
+            const cardEl = document.getElementById(`card_${qid}`);
+
+            solEl.classList.remove('hidden');
+
+            if (userAnsInput === '') {
+                statusEl.className = 'text-xs font-bold px-2.5 py-1 rounded-lg bg-amber-100 text-amber-800';
+                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i> Belum Diisi';
+                statusEl.classList.remove('hidden');
+                return false;
+            }
+
+            // Normalization check
+            const cleanUser = userAnsInput.replaceAll(' ', '').replaceAll('.', '').replaceAll(',', '.');
+            let isCorrect = false;
+
+            for (let acc of qObj.acceptedAnswers) {
+                const cleanAcc = acc.toLowerCase().replaceAll(' ', '').replaceAll('.', '').replaceAll(',', '.');
+                if (cleanUser.includes(cleanAcc) || cleanAcc.includes(cleanUser)) {
+                    isCorrect = true;
+                    break;
+                }
+            }
+
+            statusEl.classList.remove('hidden', 'bg-emerald-100', 'text-emerald-800', 'bg-rose-100', 'text-rose-800', 'bg-amber-100', 'text-amber-800');
+
+            if (isCorrect) {
+                statusEl.className = 'text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800';
+                statusEl.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i> Tepat / Benar';
+                cardEl.classList.add('ring-2', 'ring-emerald-400');
+                cardEl.classList.remove('ring-2', 'ring-rose-400');
+                return true;
+            } else {
+                statusEl.className = 'text-xs font-bold px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800';
+                statusEl.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1"></i> Perlu Diperiksa';
+                cardEl.classList.add('ring-2', 'ring-rose-400');
+                cardEl.classList.remove('ring-2', 'ring-emerald-400');
+                return false;
+            }
+        }
+
+        // Clear a single question input
+        function clearSingleAnswer(qid) {
+            const essayEl = document.getElementById(`essay_${qid}`);
+            const ansEl = document.getElementById(`ans_${qid}`);
+            if (essayEl) essayEl.value = '';
+            if (ansEl) ansEl.value = '';
+
+            handleInput(qid);
+
+            const statusEl = document.getElementById(`status_${qid}`);
+            if (statusEl) statusEl.classList.add('hidden');
+
+            const cardEl = document.getElementById(`card_${qid}`);
+            if (cardEl) cardEl.classList.remove('ring-2', 'ring-emerald-400', 'ring-rose-400', 'ring-indigo-500');
+
+            const solEl = document.getElementById(`sol_${qid}`);
+            if (solEl) solEl.classList.add('hidden');
+        }
+
+        // Reset all answers across all questions
+        function resetAllAnswers() {
+            quizData.forEach(s => {
+                s.questions.forEach(q => {
+                    clearSingleAnswer(q.id);
+                });
+            });
+
+            // Reset scores
+            document.getElementById('score-percent').innerText = '0%';
+            document.getElementById('stats-rasio').innerText = 'Rasio: 0/10';
+            document.getElementById('stats-skala').innerText = 'Skala: 0/10';
+            document.getElementById('stats-laju').innerText = 'Laju: 0/10';
+            document.getElementById('score-title').innerText = 'Evaluasi Mandiri Soal Essay';
+            document.getElementById('score-badge').className = 'w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center text-white bg-indigo-600 shadow-md flex-shrink-0';
+        }
+
+        // Check All Questions
+        function checkAllAnswers() {
+            let correctCount = 0;
+            let rasioCorrect = 0;
+            let skalaCorrect = 0;
+            let lajuCorrect = 0;
+
+            quizData.forEach(s => {
+                s.questions.forEach(q => {
+                    const res = checkSingleAnswer(q.id);
+                    if (res) {
+                        correctCount++;
+                        if (q.id.startsWith('q') && parseInt(q.id.replace('q', '')) <= 10) rasioCorrect++;
+                        else if (parseInt(q.id.replace('q', '')) <= 20) skalaCorrect++;
+                        else lajuCorrect++;
+                    }
+                });
+            });
+
+            // Update stats board
+            const scorePercent = Math.round((correctCount / 30) * 100);
+            document.getElementById('score-percent').innerText = `${scorePercent}%`;
+            document.getElementById('stats-rasio').innerText = `Rasio: ${rasioCorrect}/10`;
+            document.getElementById('stats-skala').innerText = `Skala: ${skalaCorrect}/10`;
+            document.getElementById('stats-laju').innerText = `Laju: ${lajuCorrect}/10`;
+
+            const titleEl = document.getElementById('score-title');
+            const badgeEl = document.getElementById('score-badge');
+
+            if (scorePercent === 100) {
+                titleEl.innerText = 'Luar Biasa! Skor Sempurna 🎉';
+                badgeEl.className = 'w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center text-white bg-emerald-500 shadow-lg flex-shrink-0';
+            } else if (scorePercent >= 75) {
+                titleEl.innerText = 'Sangat Baik! Pemahaman Sangat Kuat 👍';
+                badgeEl.className = 'w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center text-white bg-indigo-600 shadow-lg flex-shrink-0';
+            } else if (scorePercent >= 50) {
+                titleEl.innerText = 'Cukup Baik! Pelajari Lagi Pembahasannya 💪';
+                badgeEl.className = 'w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center text-white bg-amber-500 shadow-lg flex-shrink-0';
+            } else {
+                titleEl.innerText = 'Terus Latihan & Cek Langkah Pembahasan! 📖';
+                badgeEl.className = 'w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex flex-col items-center justify-center text-white bg-rose-500 shadow-lg flex-shrink-0';
+            }
+
+            document.getElementById('score-board').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Toggle single solution visibility
+        function toggleSolution(qid) {
+            const solEl = document.getElementById(`sol_${qid}`);
+            solEl.classList.toggle('hidden');
+        }
+
+        // Toggle all solutions
+        let allSolutionsShown = false;
+        function toggleAllSolutions() {
+            allSolutionsShown = !allSolutionsShown;
+            quizData.forEach(s => {
+                s.questions.forEach(q => {
+                    const solEl = document.getElementById(`sol_${q.id}`);
+                    if (allSolutionsShown) solEl.classList.remove('hidden');
+                    else solEl.classList.add('hidden');
+                });
+            });
+        }
+
+        // Filter Questions Section
+        function filterSection(sectionId, evt) {
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(t => {
+                t.classList.remove('bg-indigo-600', 'text-white');
+                t.classList.add('bg-white', 'text-slate-600');
+            });
+
+            if (evt) {
+                evt.currentTarget.classList.remove('bg-white', 'text-slate-600');
+                evt.currentTarget.classList.add('bg-indigo-600', 'text-white');
+            }
+
+            const sections = document.querySelectorAll('.question-section');
+            sections.forEach(sec => {
+                if (sectionId === 'all' || sec.id === sectionId) {
+                    sec.classList.remove('hidden');
+                } else {
+                    sec.classList.add('hidden');
+                }
+            });
+        }
+
+        // Smooth Scroll to question
+        function scrollToQuestion(qid) {
+            // Ensure filter is set to all so target is visible
+            filterSection('all');
+            const target = document.getElementById(`card_${qid}`);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                target.classList.add('ring-2', 'ring-indigo-500');
+                setTimeout(() => target.classList.remove('ring-2', 'ring-indigo-500'), 2000);
+            }
+        }
+
+        // Initialize on load
+        window.onload = function() {
+            renderQuickNav();
+            renderQuestions();
+            updateProgressBar();
+        };
+    </script>
+</body>
+</html>
